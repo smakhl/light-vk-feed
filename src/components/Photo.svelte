@@ -2,7 +2,6 @@
     export let photo;
 
     const photos = Object.keys(photo).filter((k) => k.includes('photo'));
-    console.log('photos', photos);
 
     let photoSrc;
     for (let i = 0; i < photos.length; i++) {
@@ -10,7 +9,6 @@
 
         if (photoSize >= 600 || i === photos.length - 1) {
             photoSrc = photo[photos[i]];
-            console.log("photoSize", photoSize)
             break;
         }
     }

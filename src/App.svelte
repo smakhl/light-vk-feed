@@ -1,46 +1,58 @@
 <script>
     import { login, logout, getIsLoggedIn } from './vk/auth';
     import Feed from './components/Feed.svelte';
+    import { getNews } from './vk/data/news';
 
+    let error;
     let isLoggedIn;
-    let waitIsLoggedIn = (async () => {
-        isLoggedIn = await getIsLoggedIn();
+    let news;
+
+    (async () => {
+        try {
+            isLoggedIn = await getIsLoggedIn();
+            if (isLoggedIn) {
+                news = await getNews();
+            }
+        } catch (e) {
+            error = JSON.stringify(e);
+        }
     })();
 
-    function handleLogoutClick() {
-        logout().then(() => {
-            isLoggedIn = false;
-        });
+    async function handleLogoutClick() {
+        await logout();
+        isLoggedIn = false;
+        news = undefined;
     }
 
-    function handleLoginClick() {
-        login().then((isSuccessful) => {
-            isLoggedIn = isSuccessful;
-        });
+    async function handleLoginClick() {
+        try {
+            isLoggedIn = await login();
+            if (isLoggedIn) {
+                news = await getNews();
+            }
+        } catch (e) {
+            error = JSON.stringify(e);
+        }
     }
 </script>
 
 <!-- prettier-ignore -->
-<div>
-    <nav>
-        {#if isLoggedIn}
-            <button on:click={handleLogoutClick} id="logout">Logout</button>
-        {/if}
-    </nav>
-    {#await waitIsLoggedIn}
-        <p>...loading</p>
-    {:then}
-        {#if isLoggedIn}
-            <Feed></Feed>
-        {:else}
-            <p class="login-wrapper">
-                <button on:click={handleLoginClick} id="login">Log in VK</button>
-            </p>
-        {/if}
-    {:catch error}
-        <p style="color: red;">{error.message}</p>
-    {/await}
-</div>
+<nav>
+    {#if isLoggedIn}
+        <button on:click={handleLogoutClick} id="logout">Logout</button>
+    {/if}
+</nav>
+{#if isLoggedIn === false}
+    <p class="login-wrapper">
+        <button on:click={handleLoginClick} id="login">Log in VK</button>
+    </p>
+{:else if news}
+    <Feed {news}></Feed>
+{:else if error}
+    <p style="color: red;">{error.message}</p>
+{:else}
+    <p>...loading</p>
+{/if}
 
 <style>
     nav {
