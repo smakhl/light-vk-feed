@@ -1,17 +1,27 @@
 <script>
-    import { login, logout, getIsLoggedIn } from './vk/auth';
     import Feed from './components/Feed.svelte';
+    import { login, logout, getIsLoggedIn } from './vk/auth';
     import { getNews } from './vk/data/news';
+    import { groupBy } from './utils/groupBy';
+    import { makeDateFromUnixTime } from './utils/makeDateFromUnixTime';
 
     let error;
     let isLoggedIn;
     let news;
+    let newsBySources;
 
     (async () => {
         try {
             isLoggedIn = await getIsLoggedIn();
             if (isLoggedIn) {
                 news = await getNews();
+
+                const lastPostDate = makeDateFromUnixTime(
+                    news[news.length - 1].date
+                );
+                console.log(lastPostDate);
+                newsBySources = groupBy(news, 'source_name');
+                console.log(newsBySources);
             }
         } catch (e) {
             error = JSON.stringify(e);

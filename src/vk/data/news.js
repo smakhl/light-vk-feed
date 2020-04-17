@@ -6,6 +6,7 @@ export function getNews() {
             {
                 v: '5.73',
                 return_banned: 0,
+                count: 100,
                 filters: 'post',
                 source_ids: 'groups,pages',
                 // start_from: '100/5_-30666517_1662753:1450415924',
