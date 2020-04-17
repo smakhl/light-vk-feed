@@ -41,10 +41,10 @@
 
 <style>
     .post {
-        border: 1px solid #bada55;
         padding: 1em;
         margin-bottom: 0.5em;
         position: relative;
+        box-shadow: 0 0 3px rgb(128, 128, 128);
     }
     .text {
         white-space: pre-wrap;
