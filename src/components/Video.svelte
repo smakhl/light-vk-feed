@@ -3,7 +3,7 @@
 
     // fixme choose poster based on screen size
     const posterSrc = att.doc.preview.photo.sizes[0].src;
-    const videoSrc = att.doc.preview.video.src;
+    const videoSrc = att.doc.preview.video && att.doc.preview.video.src || att.doc.url;
 </script>
 
 <!-- prettier-ignore -->

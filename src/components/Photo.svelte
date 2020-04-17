@@ -1,13 +1,21 @@
 <script>
-    export let att;
+    export let photo;
 
-    const photoSizes = Object.keys(att.photo).filter((k) =>
-        k.includes('photo')
-    );
+    const photos = Object.keys(photo).filter((k) => k.includes('photo'));
+    console.log('photos', photos);
 
-    // fixme replace with screensize based size
-    const medianQuality = Math.floor(photoSizes.length / 2);
-    const photoSrc = att.photo[photoSizes[medianQuality]];
+    let photoSrc;
+    for (let i = 0; i < photos.length; i++) {
+        const photoSize = photos[i].split('_')[1];
+
+        if (photoSize >= 600 || i === photos.length - 1) {
+            photoSrc = photo[photos[i]];
+            console.log("photoSize", photoSize)
+            break;
+        }
+    }
+
+    
 </script>
 
 <!-- prettier-ignore -->

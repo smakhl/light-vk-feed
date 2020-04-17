@@ -8,15 +8,22 @@
 <!-- prettier-ignore -->
 <div>
     {#if att.type === 'photo'}
-        <Photo {att}></Photo>
-    {:else if att.type === 'doc'}
+        <Photo photo={att.photo}></Photo>
+    {:else if att.type === 'video'}
+        Video frame:
+        <Photo photo={att.video}></Photo>
+    {:else if att.type === 'doc' && att.doc.ext === 'gif'}
         <Video {att}></Video>
     {:else if att.type === 'link'}
         <Link {att}></Link>
     {:else}
-        <p>Unsupported attachment type: {att.type}</p>
+        <p>Unsupported attachment: {JSON.stringify(att)}</p>
     {/if}
 </div>
 
 <style>
+    p {
+        word-break: break-word;
+        max-width: 100%;
+    }
 </style>
