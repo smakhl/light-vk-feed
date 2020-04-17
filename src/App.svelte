@@ -37,22 +37,24 @@
 </script>
 
 <!-- prettier-ignore -->
-<nav>
-    {#if isLoggedIn}
-        <button on:click={handleLogoutClick} id="logout">Logout</button>
+<div>
+    <nav>
+        {#if isLoggedIn}
+            <button on:click={handleLogoutClick} id="logout">Logout</button>
+        {/if}
+    </nav>
+    {#if isLoggedIn === false}
+        <p class="login-wrapper">
+            <button on:click={handleLoginClick} id="login">Log in VK</button>
+        </p>
+    {:else if news}
+        <Feed {news}></Feed>
+    {:else if error}
+        <p style="color: red;">{error.message}</p>
+    {:else}
+        <p>...loading</p>
     {/if}
-</nav>
-{#if isLoggedIn === false}
-    <p class="login-wrapper">
-        <button on:click={handleLoginClick} id="login">Log in VK</button>
-    </p>
-{:else if news}
-    <Feed {news}></Feed>
-{:else if error}
-    <p style="color: red;">{error.message}</p>
-{:else}
-    <p>...loading</p>
-{/if}
+</div>
 
 <style>
     nav {
@@ -61,7 +63,7 @@
         justify-content: flex-end;
         align-items: center;
 
-        background-color: #4a76a8;
+        background-color: #68a5eb;
         height: 42px;
     }
 

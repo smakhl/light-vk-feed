@@ -1,28 +1,42 @@
 <script>
     import Attachment from './Attachment.svelte';
 
-    export let source;
-    export let text;
     export let item;
 
     const postUrl = `https://vk.com/wall${item.source_id}_${item.post_id}`;
+    const date = new Date(item.date * 1000).toLocaleString('ru');
+    const repost = item.copy_history && item.copy_history[0];
+    const repostDate =
+        repost && new Date(repost.date * 1000).toLocaleString('ru');
 </script>
 
 <!-- prettier-ignore -->
 <div class="post">
-    <h4>{source}</h4>
-    {#if text}
-        <p class="text">{text}</p>
+    <p class="date">{date}</p>
+    <h4>{item.source_name}</h4>
+    {#if item.text}
+        <p class="text">{item.text}</p>
     {/if}
     {#if item.attachments}
         {#each item.attachments as att, i}
            <Attachment {att}></Attachment>
         {/each}
     {/if}
+    {#if repost}
+        <div class="post">
+            <p class="date">{repostDate}</p>
+            <h4>{repost.source_name}</h4>
+            {#if repost.text}
+                <p class="text">{repost.text}</p>
+            {/if}
+            {#if repost.attachments}
+                {#each repost.attachments as att, i}
+                    <Attachment {att}></Attachment>
+                {/each}
+            {/if}
+        </div>
+    {/if}
     <p><a href={postUrl} target="_blank">{postUrl}</a></p>
-    <p class="date">
-        {(new Date(item.date * 1000)).toLocaleString('ru')}
-    </p>
 </div>
 
 <style>

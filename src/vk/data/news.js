@@ -6,8 +6,8 @@ export function getNews() {
             {
                 v: '5.73',
                 return_banned: 0,
-                count: 10,
-                filters: 'post'
+                filters: 'post',
+                source_ids: 'groups,pages',
                 // start_from: '100/5_-30666517_1662753:1450415924',
             },
             function ({ response }) {
@@ -17,31 +17,19 @@ export function getNews() {
                 }
 
                 const groupNames = getGroupNames(response.groups);
-                const profilesNames = getProfileNames(response.profiles);
 
-                const result = response.items.map((item) => {
-                    const { text, source_id } = item;
-
-                    return {
-                        source:
-                            groupNames[-source_id] || profilesNames[source_id],
-                        text,
-                        item,
-                    };
+                response.items.forEach((item) => {
+                    item.source_name = groupNames[-item.source_id];
+                    const [repost] = item.copy_history || [];
+                    if (repost) {
+                        repost.source_name = groupNames[-repost.from_id];
+                    }
                 });
 
-                resolve(result);
+                resolve(response.items);
             }
         );
     });
-}
-
-function getProfileNames(profiles) {
-    const profilesHash = {};
-    profiles.forEach((pr) => {
-        profilesHash[pr.id] = `${pr.first_name} ${pr.last_name}`.trim();
-    });
-    return profilesHash;
 }
 
 function getGroupNames(groups) {

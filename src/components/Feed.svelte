@@ -5,8 +5,8 @@
 
 <!-- prettier-ignore -->
 <div class="feed">
-    {#each news as newsItem, i}
-        <Post {...newsItem}></Post>
+    {#each news as item, i}
+        <Post {item}></Post>
     {/each}
 </div>
 
