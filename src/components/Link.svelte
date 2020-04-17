@@ -3,7 +3,7 @@
 
     export let att;
 
-    const photoSrc = selectPhoto(att.link.photo, 130);
+    const photoSrc = att.link.photo && selectPhoto(att.link.photo, 130);
 </script>
 
 <!-- prettier-ignore -->
