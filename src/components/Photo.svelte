@@ -1,19 +1,9 @@
 <script>
+    import { selectPhoto } from '../utils/selectPhoto';
+
     export let photo;
 
-    const photos = Object.keys(photo).filter((k) => k.includes('photo'));
-
-    let photoSrc;
-    for (let i = 0; i < photos.length; i++) {
-        const photoSize = photos[i].split('_')[1];
-
-        if (photoSize >= 600 || i === photos.length - 1) {
-            photoSrc = photo[photos[i]];
-            break;
-        }
-    }
-
-    
+    const photoSrc = selectPhoto(photo, 600);
 </script>
 
 <!-- prettier-ignore -->
