@@ -11,6 +11,8 @@
         "@rollup/plugin-commonjs": "^11.0.0",
         "@rollup/plugin-node-resolve": "^7.0.0",
         "gh-pages": "^2.2.0",
+        "husky": "^4.2.5",
+        "lint-staged": "^10.1.4",
         "prettier": "^2.0.4",
         "rollup": "^1.20.0",
         "rollup-plugin-livereload": "^1.0.0",
@@ -20,5 +22,13 @@
     },
     "dependencies": {
         "sirv-cli": "^0.4.4"
+    },
+    "husky": {
+        "hooks": {
+            "pre-commit": "lint-staged"
+        }
+    },
+    "lint-staged": {
+        "*.{js,css,md,svelte}": "prettier --write"
     }
 }
