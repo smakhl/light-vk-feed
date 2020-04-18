@@ -12,7 +12,6 @@ export function getNews() {
                 // start_from: '100/5_-30666517_1662753:1450415924',
             },
             function ({ response }) {
-                console.log('getNews -> response', response);
                 if (!response) {
                     reject();
                 }
@@ -21,10 +20,13 @@ export function getNews() {
 
                 response.items.forEach((item) => {
                     item.source_name = groupNames[-item.source_id];
+
                     const [repost] = item.copy_history || [];
                     if (repost) {
                         repost.source_name = groupNames[-repost.from_id];
                     }
+
+                    item.post_uid = `${item.source_id}_${item.post_id}`;
                 });
 
                 resolve(response.items);

@@ -1,17 +1,36 @@
 <script>
+    import { onMount, onDestroy } from 'svelte';
+    import { makeDateFromUnixTime } from '../utils/makeDateFromUnixTime';
     import Attachment from './Attachment.svelte';
 
     export let item;
+    export let observer;
 
-    const postUrl = `https://vk.com/wall${item.source_id}_${item.post_id}`;
-    const date = new Date(item.date * 1000).toLocaleString('ru');
+    let container;
+    onMount(() => {
+        if (!observer) return;
+        observer.observe(container);
+    });
+    onDestroy(() => {
+        if (!observer) return;
+        observer.unobserve(container);
+    });
+
+    const postUrl = `https://vk.com/wall${item.post_uid}`;
+    const formatDate = (date) =>
+        makeDateFromUnixTime(date).toLocaleString('ru');
+    const date = formatDate(item.date);
     const repost = item.copy_history && item.copy_history[0];
-    const repostDate =
-        repost && new Date(repost.date * 1000).toLocaleString('ru');
+    const repostDate = repost && formatDate(repost.date);
 </script>
 
 <!-- prettier-ignore -->
-<div class="post">
+<div 
+    bind:this={container} 
+    class="post"
+    class:seen={item.seen}
+    data-post-uid={item.post_uid}
+>
     <p class="date">{date}</p>
     <h4>{item.source_name}</h4>
     {#if item.text}
@@ -57,5 +76,8 @@
         right: 0.5em;
         font-size: 0.75em;
         margin: 0;
+    }
+    .seen {
+        opacity: 0.5;
     }
 </style>

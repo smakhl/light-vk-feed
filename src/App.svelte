@@ -4,6 +4,7 @@
     import { getNews } from './vk/data/news';
     import { groupBy } from './utils/groupBy';
     import { makeDateFromUnixTime } from './utils/makeDateFromUnixTime';
+    import { hasPostBeenSeen } from './storage';
 
     let error;
     let isLoggedIn;
@@ -14,14 +15,14 @@
         try {
             isLoggedIn = await getIsLoggedIn();
             if (isLoggedIn) {
-                news = await getNews();
-
-                const lastPostDate = makeDateFromUnixTime(
-                    news[news.length - 1].date
-                );
-                console.log(lastPostDate);
-                newsBySources = groupBy(news, 'source_name');
-                console.log(newsBySources);
+                const _news = await getNews();
+                news = _news.filter((n) => !hasPostBeenSeen(n.post_uid));
+                // const lastPost = news[news.length - 1];
+                // console.log('lastPost', lastPost);
+                // const lastPostDate = makeDateFromUnixTime(lastPost.date);
+                // console.log(lastPostDate);
+                // newsBySources = groupBy(news, 'source_name');
+                // console.log(newsBySources);
             }
         } catch (e) {
             error = JSON.stringify(e);
@@ -58,6 +59,12 @@
             <button on:click={handleLoginClick} id="login">Log in VK</button>
         </p>
     {:else if news}
+        <!-- {#each Object.keys(newsBySources) as source, i}
+            <details>
+                <summary>{source} ({newsBySources[source].length})</summary>
+                <Feed news={newsBySources[source]}></Feed>
+            </details>
+        {/each} -->
         <Feed {news}></Feed>
     {:else if error}
         <p style="color: red;">{error.message}</p>
