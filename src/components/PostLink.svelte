@@ -1,9 +1,16 @@
 <script>
-    import { selectPhoto } from '../utils/selectPhoto';
-
     export let att;
 
-    const photoSrc = att.link.photo && selectPhoto(att.link.photo, 130);
+    let photoSrc;
+    if (att.link.photo) {
+        const photoSizes = Object.keys(att.link.photo).filter((k) =>
+            k.includes('photo')
+        );
+
+        // fixme replace with screensize based size
+        const medianQuality = Math.floor(photoSizes.length / 2);
+        photoSrc = att.link.photo[photoSizes[medianQuality]];
+    }
 </script>
 
 <!-- prettier-ignore -->

@@ -3,15 +3,15 @@
     export let news;
 </script>
 
-<!-- prettier-ignore -->
-<div class="feed">
-    {#each news as item, i}
-        <Post {item}></Post>
-    {/each}
-</div>
-
 <style>
     .feed {
         padding: 8px;
     }
 </style>
+
+<!-- prettier-ignore -->
+<div class="feed">
+    {#each news as item, i}
+        <Post {item} />
+    {/each}
+</div>

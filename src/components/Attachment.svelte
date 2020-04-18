@@ -1,5 +1,5 @@
 <script>
-    import Link from './Link.svelte';
+    import PostLink from './PostLink.svelte';
     import Photo from './Photo.svelte';
     import Video from './Video.svelte';
     export let att;
@@ -15,7 +15,7 @@
     {:else if att.type === 'doc' && att.doc.ext === 'gif'}
         <Video {att}></Video>
     {:else if att.type === 'link'}
-        <Link {att}></Link>
+        <PostLink {att}></PostLink>
     {:else}
         <p>Unsupported attachment: {JSON.stringify(att)}</p>
     {/if}
