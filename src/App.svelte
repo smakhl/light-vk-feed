@@ -9,7 +9,7 @@
     let error;
     let isLoggedIn;
     let news;
-    let newsBySources;
+    // let newsBySources;
 
     (async () => {
         try {
@@ -45,11 +45,21 @@
             error = JSON.stringify(e);
         }
     }
+
+    let readNewsCount = 0;
+    function handlePostRead() {
+        readNewsCount = news.filter((n) => n.seen).length;
+    }
 </script>
 
 <!-- prettier-ignore -->
 <div>
     <nav>
+        {#if news}
+            <span class="read-counter">
+                {readNewsCount}/{news.length}
+            </span>
+        {/if}
         {#if isLoggedIn}
             <button on:click={handleLogoutClick} id="logout">Logout</button>
         {/if}
@@ -65,7 +75,9 @@
                 <Feed news={newsBySources[source]}></Feed>
             </details>
         {/each} -->
-        <Feed {news}></Feed>
+        <main>
+            <Feed {news} onPostRead={handlePostRead}></Feed>
+        </main>
     {:else if error}
         <p style="color: red;">{error.message}</p>
     {:else}
@@ -82,10 +94,24 @@
 
         background-color: #68a5eb;
         height: 42px;
-    }
 
+        position: fixed;
+        left: 0;
+        right: 0;
+        top: 0;
+        z-index: 1;
+    }
+    .read-counter {
+        color: #fff;
+        margin-left: 24px;
+        margin-right: auto;
+    }
+    main {
+        margin-top: 42px;
+    }
     #logout {
-        margin: 5px;
+        margin: 0;
+        margin-right: 8px;
         font-size: 12px;
     }
     .login-wrapper {

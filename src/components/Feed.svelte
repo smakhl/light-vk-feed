@@ -2,6 +2,7 @@
     import Post from './Post.svelte';
     import { markPostSeen } from '../storage';
     export let news;
+    export let onPostRead;
 
     history.scrollRestoration = 'manual';
 
@@ -15,6 +16,7 @@
                 news = news;
 
                 markPostSeen(postUid);
+                onPostRead();
 
                 observer.unobserve(target);
             }
