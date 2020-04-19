@@ -25,11 +25,7 @@
     const observer = new IntersectionObserver(handler, { threshold: 0 });
 </script>
 
-<style>
-    .feed {
-        padding: 8px;
-    }
-</style>
+<style></style>
 
 <!-- prettier-ignore -->
 <div class="feed">

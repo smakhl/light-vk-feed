@@ -25,14 +25,19 @@
                 // console.log(newsBySources);
             }
         } catch (e) {
-            error = JSON.stringify(e);
+            error = e;
         }
     })();
 
     async function handleLogoutClick() {
+        if (!confirm('Are you sure?')) {
+            return;
+        }
+
         await logout();
         isLoggedIn = false;
         news = undefined;
+        localStorage.clear();
     }
 
     async function handleLoginClick() {
@@ -42,7 +47,7 @@
                 news = await getNews();
             }
         } catch (e) {
-            error = JSON.stringify(e);
+            error = e;
         }
     }
 
@@ -64,25 +69,25 @@
             <button on:click={handleLogoutClick} id="logout">Logout</button>
         {/if}
     </nav>
-    {#if isLoggedIn === false}
-        <p class="login-wrapper">
-            <button on:click={handleLoginClick} id="login">Log in VK</button>
-        </p>
-    {:else if news}
-        <!-- {#each Object.keys(newsBySources) as source, i}
-            <details>
-                <summary>{source} ({newsBySources[source].length})</summary>
-                <Feed news={newsBySources[source]}></Feed>
-            </details>
-        {/each} -->
-        <main>
+    <main>
+        {#if isLoggedIn === false}
+            <p class="centered">
+                <button on:click={handleLoginClick} id="login">Log in VK</button>
+            </p>
+        {:else if news}
+            <!-- {#each Object.keys(newsBySources) as source, i}
+                <details>
+                    <summary>{source} ({newsBySources[source].length})</summary>
+                    <Feed news={newsBySources[source]}></Feed>
+                </details>
+            {/each} -->
             <Feed {news} onPostRead={handlePostRead}></Feed>
-        </main>
-    {:else if error}
-        <p style="color: red;">{error.message}</p>
-    {:else}
-        <p>...loading</p>
-    {/if}
+        {:else if error}
+            <p class="centered" style="color: red;">{error.message}</p>
+        {:else}
+            <p class="centered">...loading</p>
+        {/if}
+    </main>
 </div>
 
 <style>
@@ -108,13 +113,14 @@
     }
     main {
         margin-top: 42px;
+        padding: 8px;
     }
     #logout {
         margin: 0;
         margin-right: 8px;
         font-size: 12px;
     }
-    .login-wrapper {
+    .centered {
         text-align: center;
     }
 </style>

@@ -13,17 +13,18 @@ export function getNews() {
             },
             function ({ response }) {
                 if (!response) {
-                    reject();
+                    reject(new Error('Failed to load posts'));
+                    return;
                 }
 
-                const groupNames = getGroupNames(response.groups);
+                const sourcesNames = getSourcesNames(response.groups);
 
                 response.items.forEach((item) => {
-                    item.source_name = groupNames[-item.source_id];
+                    item.source_name = sourcesNames[-item.source_id];
 
                     const [repost] = item.copy_history || [];
                     if (repost) {
-                        repost.source_name = groupNames[-repost.from_id];
+                        repost.source_name = sourcesNames[-repost.from_id];
                     }
 
                     item.post_uid = `${item.source_id}_${item.post_id}`;
@@ -35,7 +36,7 @@ export function getNews() {
     });
 }
 
-function getGroupNames(groups) {
+function getSourcesNames(groups) {
     const groupsHash = {};
     groups.forEach((gr) => {
         groupsHash[gr.id] = gr.name;

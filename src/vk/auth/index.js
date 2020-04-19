@@ -2,9 +2,10 @@
 const wallAccessCode = 8192;
 const friendsAccessCode = 2;
 const ACCESS_LEVEL = (wallAccessCode + friendsAccessCode).toString();
+const APP_ID = 7412293;
 
 VK.init({
-    apiId: 7412293,
+    apiId: APP_ID,
 });
 
 export function login() {
