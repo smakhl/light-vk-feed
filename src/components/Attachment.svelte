@@ -10,20 +10,26 @@
     {#if att.type === 'photo'}
         <Photo photo={att.photo}></Photo>
     {:else if att.type === 'video'}
-        Video frame:
+        <span>Video frame:</span>
         <Photo photo={att.video}></Photo>
     {:else if att.type === 'doc' && att.doc.ext === 'gif'}
         <Video {att}></Video>
+    {:else if att.type === 'doc' && att.doc.ext === 'pdf'}
+        <p>Doc: {att.doc.title}</p>
     {:else if att.type === 'link'}
         <PostLink {att}></PostLink>
-    {:else}
+    {:else if att.type === 'podcast'}
+        <p>Podcast: {att.podcast.title}</p>
+    {:else if att.type === 'podcast'}
         <p>Unsupported attachment: {JSON.stringify(att)}</p>
     {/if}
 </div>
 
 <style>
-    p {
+    p,
+    span {
         word-break: break-word;
         max-width: 100%;
+        font-style: italic;
     }
 </style>

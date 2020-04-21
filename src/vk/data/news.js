@@ -1,3 +1,5 @@
+import { Post } from '../../viewmodels/Post';
+
 // https://vk.com/dev/newsfeed.get
 export function getNews() {
     return new Promise((resolve, reject) => {
@@ -9,28 +11,21 @@ export function getNews() {
                 count: 100,
                 filters: 'post',
                 source_ids: 'groups,pages',
-                // start_from: '100/5_-30666517_1662753:1450415924',
+                // start_from: '100/5_-36250705_27295:1163101250',
             },
             function ({ response }) {
+                console.log('getNews -> response', response);
                 if (!response) {
                     reject(new Error('Failed to load posts'));
                     return;
                 }
 
                 const sourcesNames = getSourcesNames(response.groups);
+                const unseenPosts = response.items
+                    .filter((item) => !Post.hasPostBeenSeen(item))
+                    .map((item) => new Post(item, sourcesNames));
 
-                response.items.forEach((item) => {
-                    item.source_name = sourcesNames[-item.source_id];
-
-                    const [repost] = item.copy_history || [];
-                    if (repost) {
-                        repost.source_name = sourcesNames[-repost.from_id];
-                    }
-
-                    item.post_uid = `${item.source_id}_${item.post_id}`;
-                });
-
-                resolve(response.items);
+                resolve(unseenPosts);
             }
         );
     });

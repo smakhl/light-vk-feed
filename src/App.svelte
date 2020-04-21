@@ -2,27 +2,16 @@
     import Feed from './components/Feed.svelte';
     import { login, logout, getIsLoggedIn } from './vk/auth';
     import { getNews } from './vk/data/news';
-    import { groupBy } from './utils/groupBy';
-    import { makeDateFromUnixTime } from './utils/makeDateFromUnixTime';
-    import { hasPostBeenSeen } from './storage';
 
     let error;
     let isLoggedIn;
     let news;
-    // let newsBySources;
 
     (async () => {
         try {
             isLoggedIn = await getIsLoggedIn();
             if (isLoggedIn) {
-                const _news = await getNews();
-                news = _news.filter((n) => !hasPostBeenSeen(n.post_uid));
-                // const lastPost = news[news.length - 1];
-                // console.log('lastPost', lastPost);
-                // const lastPostDate = makeDateFromUnixTime(lastPost.date);
-                // console.log(lastPostDate);
-                // newsBySources = groupBy(news, 'source_name');
-                // console.log(newsBySources);
+                news = await getNews();
             }
         } catch (e) {
             error = e;
@@ -52,8 +41,17 @@
     }
 
     let readNewsCount = 0;
-    function handlePostRead() {
+    function updateReadCount() {
         readNewsCount = news.filter((n) => n.seen).length;
+    }
+
+    async function handleRefreshClick() {
+        // blur old posts
+        news.forEach((n) => {
+            n.markSeen();
+        });
+        news = news;
+        news = await getNews();
     }
 </script>
 
@@ -72,16 +70,17 @@
     <main>
         {#if isLoggedIn === false}
             <p class="centered">
-                <button on:click={handleLoginClick} id="login">Log in VK</button>
+                <button on:click={handleLoginClick}>Log in with VK</button>
             </p>
         {:else if news}
-            <!-- {#each Object.keys(newsBySources) as source, i}
-                <details>
-                    <summary>{source} ({newsBySources[source].length})</summary>
-                    <Feed news={newsBySources[source]}></Feed>
-                </details>
-            {/each} -->
-            <Feed {news} onPostRead={handlePostRead}></Feed>
+            {#if news.length > 0}
+                <Feed posts={news} onPostRead={updateReadCount}></Feed>
+            {:else}
+                <p class="centered">There's nothing new in your feed! Well done!</p>
+            {/if}
+            <p class="centered">
+                <button on:click={handleRefreshClick} class="refresh-button">Refresh</button>
+            </p>
         {:else if error}
             <p class="centered" style="color: red;">{error.message}</p>
         {:else}
@@ -122,5 +121,10 @@
     }
     .centered {
         text-align: center;
+    }
+    .refresh-button {
+        letter-spacing: 2px;
+        width: 100%;
+        margin: 0.5em 0;
     }
 </style>
