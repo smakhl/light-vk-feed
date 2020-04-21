@@ -23,6 +23,7 @@ export class Post {
                 sourceName: sourcesNames[-repost.from_id],
                 date: makeDateFromUnixTime(repost.date).toLocaleString('ru'),
                 attachments: repost.attachments,
+                text: repost.text,
             };
         }
 
