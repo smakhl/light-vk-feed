@@ -52,6 +52,7 @@
         });
         news = news;
         news = await getNews();
+        updateReadCount();
     }
 </script>
 
