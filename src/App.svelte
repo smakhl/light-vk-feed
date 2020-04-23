@@ -45,50 +45,53 @@
         readNewsCount = news.filter((n) => n.seen).length;
     }
 
-    async function handleRefreshClick() {
-        // blur old posts
+    async function markAllAsReadAndRefresh() {
         news.forEach((n) => {
             n.markSeen();
         });
-        news = news;
+        refresh();
+    }
+
+    async function refresh() {
+        window.scrollTo(0, 0);
+        news = undefined;
         news = await getNews();
         updateReadCount();
     }
 </script>
 
 <!-- prettier-ignore -->
-<div>
-    <nav>
-        {#if news}
-            <span class="read-counter">
-                {readNewsCount}/{news.length}
-            </span>
-        {/if}
-        {#if isLoggedIn}
-            <button on:click={handleLogoutClick} id="logout">Logout</button>
-        {/if}
-    </nav>
-    <main>
-        {#if isLoggedIn === false}
-            <p class="centered">
-                <button on:click={handleLoginClick}>Log in with VK</button>
-            </p>
-        {:else if news}
-            {#if news.length > 0}
-                <Feed posts={news} onPostRead={updateReadCount}></Feed>
-            {:else}
-                <p class="centered">There's nothing new in your feed! Well done!</p>
-            {/if}
-            <p class="centered">
-                <button on:click={handleRefreshClick} class="refresh-button">Refresh</button>
-            </p>
-        {:else if error}
-            <p class="centered" style="color: red;">{error.message}</p>
+<nav>
+    {#if news}
+        <span class="read-counter">
+            {readNewsCount}/{news.length}
+        </span>
+    {/if}
+    {#if isLoggedIn}
+        <button on:click={handleLogoutClick} id="logout">Logout</button>
+    {/if}
+</nav>
+<!-- prettier-ignore -->
+<main>
+    {#if isLoggedIn === false}
+        <p class="centered">
+            <button on:click={handleLoginClick}>Log in with VK</button>
+        </p>
+    {:else if news}
+        {#if news.length > 0}
+            <Feed posts={news} onPostRead={updateReadCount}></Feed>
         {:else}
-            <p class="centered">...loading</p>
+            <p class="centered">There's nothing new in your feed! Well done!</p>
         {/if}
-    </main>
-</div>
+        <p class="centered">
+            <button on:click={markAllAsReadAndRefresh} class="refresh-button">Refresh</button>
+        </p>
+    {:else if error}
+        <p class="centered" style="color: red;">{error.message}</p>
+    {:else}
+        <p class="centered">Loading...</p>
+    {/if}
+</main>
 
 <style>
     nav {
@@ -112,8 +115,9 @@
         margin-right: auto;
     }
     main {
-        margin-top: 42px;
+        margin: 42px auto 0;
         padding: 8px;
+        max-width: 500px;
     }
     #logout {
         margin: 0;
