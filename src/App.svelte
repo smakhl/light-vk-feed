@@ -118,6 +118,7 @@
         margin: 42px auto 0;
         padding: 8px;
         max-width: 500px;
+        min-width: 300px;
     }
     #logout {
         margin: 0;
