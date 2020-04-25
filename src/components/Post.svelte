@@ -4,6 +4,7 @@
 
     export let post;
     export let observer;
+    export let showPostSource;
 
     const { postUrl, date, repost, sourceName, text, attachments, uid } = post;
 
@@ -26,7 +27,9 @@
     data-post-uid={uid}
 >
     <p class="date">{date}</p>
-    <h4>{sourceName}</h4>
+    {#if showPostSource}
+        <h4>{sourceName}</h4>
+    {/if}
     {#if text}
         <p class="text">{text}</p>
     {/if}

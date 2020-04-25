@@ -2,6 +2,7 @@
     import Post from './Post.svelte';
     export let posts;
     export let onPostRead;
+    export let showPostSource;
 
     const handler = (entries, observer) => {
         entries.forEach((entry) => {
@@ -21,8 +22,6 @@
 <style></style>
 
 <!-- prettier-ignore -->
-<div class="feed">
-    {#each posts as post, i}
-        <Post {post} observer={observer} />
-    {/each}
-</div>
+{#each posts as post, i}
+<Post {post} observer="{observer}" {showPostSource} />
+{/each}
