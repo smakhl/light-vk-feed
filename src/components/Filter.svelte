@@ -1,11 +1,7 @@
 <script>
     import { fade, fly } from 'svelte/transition';
     import { quintOut } from 'svelte/easing';
-
-    export let newsBySource;
-    export let current;
-    export let onCurrentChanged;
-    let selected = current;
+    import { news, NEWS_STATUS } from '../stores/news';
 
     const flyProps = {
         y: 1000,
@@ -18,15 +14,15 @@
         showButton = !showButton;
     }
 
-    $: {
-        if (selected !== current) {
-            onCurrentChanged(selected);
-            toggleShowButton();
-        }
+    let selected = $news.feedName;
+    function handleFeedChange() {
+        news.setFeed(selected);
+        toggleShowButton();
     }
 
     function getUnseenCount(source) {
-        return newsBySource[source].filter((post) => !post.seen).length;
+        if (!$news.feeds[source]) return undefined;
+        return $news.feeds[source].filter((post) => !post.seen).length;
     }
 </script>
 
@@ -42,11 +38,16 @@
 <div class="paranja" on:click="{toggleShowButton}"></div>
 <div class="popup shadow" transition:fly="{flyProps}">
     <div class="sources">
-        {#each Object.keys(newsBySource) as source} {#if getUnseenCount(source)
-        > 0}
+        {#each Object.keys($news.feeds) as feedName} {#if
+        getUnseenCount(feedName) > 0}
         <label>
-            <input type="radio" bind:group="{selected}" value="{source}" />
-            {source} ({getUnseenCount(source)})
+            <input
+                type="radio"
+                bind:group="{selected}"
+                value="{feedName}"
+                on:change="{handleFeedChange}"
+            />
+            {feedName} ({getUnseenCount(feedName)})
         </label>
         {/if} {/each}
     </div>

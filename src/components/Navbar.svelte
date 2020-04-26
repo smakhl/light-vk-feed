@@ -1,9 +1,11 @@
 <script>
     import { auth, AUTH_STATUS } from '../stores/auth';
+    import { news, NEWS_STATUS } from '../stores/news';
 
-    export let source;
-    export let readCount;
-    export let totalCount;
+    $: source = $news.feedName;
+    $: readCount = $news.feed.filter((n) => n.seen).length;
+    $: totalCount = $news.feed.length;
+
     function handleLogoutClick() {
         if (!confirm('Are you sure?')) {
             return;

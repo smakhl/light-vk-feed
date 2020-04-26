@@ -14,10 +14,10 @@ export function getNews() {
                 source_ids: 'groups,pages',
                 // start_from: '100/5_-36250705_27295:1163101250',
             },
-            function ({ response }) {
-                console.log('getNews -> response', response);
+            function (result) {
+                const { response } = result;
                 if (!response) {
-                    reject(new Error('Failed to load posts'));
+                    reject(result);
                     return;
                 }
 

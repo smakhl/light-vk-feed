@@ -6,22 +6,14 @@
     import { getNews } from './vk/data/news';
     import { groupBy } from './utils/groupBy';
     import { auth, AUTH_STATUS } from './stores/auth';
-
-    let source = 'All';
-    let newsBySource;
-    $: news = newsBySource && newsBySource[source];
-    $: readNewsCount = news && news.filter((n) => n.seen).length;
-    $: showPostSource = source === 'All';
-    $: totalNewsCount = news && news.length;
+    import { news, NEWS_STATUS } from './stores/news';
 
     auth.subscribe((status) => {
         if (status === AUTH_STATUS.LOGGED_IN) {
-            getNews().then((n) => {
-                newsBySource = n;
-            });
+            news.load();
         }
         if (status === AUTH_STATUS.LOGGED_OUT) {
-            newsBySource = undefined;
+            news.reset();
         }
     });
 
@@ -29,33 +21,13 @@
         auth.login();
     }
 
-    function updateReadCount() {
-        newsBySource = newsBySource;
-    }
-
     function markAllAsReadAndRefresh() {
-        news.forEach((n) => {
-            n.markSeen();
-        });
-        refresh();
-    }
-
-    async function refresh() {
-        window.scrollTo(0, 0);
-        newsBySource = await getNews();
-        if (!newsBySource[source]) {
-            source = 'All';
-        }
-        updateReadCount();
-    }
-
-    function handleSourceChange(newSource) {
-        if (newSource === source) return;
-        source = newSource;
+        news.markFeedSeen();
+        news.load();
     }
 </script>
 
-<Navbar {source} totalCount="{totalNewsCount}" readCount="{readNewsCount}" />
+<Navbar />
 <!-- prettier-ignore -->
 <main>
     <div class="top">
@@ -64,12 +36,9 @@
                 <button on:click={handleLoginClick}>Log in with VK</button>
             </p>
         {:else if $auth === AUTH_STATUS.LOGGED_IN}
-            {#if news}
-                {#if news.length > 0}
-                    <Feed posts={news} 
-                        onPostRead={updateReadCount} 
-                        {showPostSource}
-                    ></Feed>
+            {#if $news.status === NEWS_STATUS.LOADED}
+                {#if $news.feed.length > 0}
+                    <Feed />
                 {:else}
                     <p class="centered">There's nothing new in your feed! Well done!</p>
                 {/if}
@@ -83,7 +52,7 @@
 
     
     <div class="bottom">
-        {#if $auth === AUTH_STATUS.LOGGED_IN && news}
+        {#if $auth === AUTH_STATUS.LOGGED_IN}
             <p class="centered">
                 <button on:click={markAllAsReadAndRefresh} class="refresh-button">
                     <img class="refresh-icon" src="icons/refresh.svg" alt="">
@@ -95,12 +64,8 @@
         </p>
     </div>
 
-    {#if newsBySource && newsBySource.All.length}
-        <Filter
-            {newsBySource}
-            current="{source}"
-            onCurrentChanged="{handleSourceChange}"
-        />
+    {#if Object.keys($news.feeds).length > 2 }
+        <Filter />
     {/if}
 </main>
 

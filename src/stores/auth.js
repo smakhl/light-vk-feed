@@ -7,6 +7,8 @@ export const AUTH_STATUS = {
     LOGGED_OUT: 'LOGGED_OUT',
 };
 
+export const auth = createAuthStore();
+
 function createAuthStore() {
     const { subscribe, set } = writable(AUTH_STATUS.LOADING);
 
@@ -44,5 +46,3 @@ function createAuthStore() {
         },
     };
 }
-
-export const auth = createAuthStore();
