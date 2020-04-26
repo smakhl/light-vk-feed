@@ -1,4 +1,5 @@
 import { Post } from '../../viewmodels/Post';
+import { groupBy } from '../../utils/groupBy';
 
 // https://vk.com/dev/newsfeed.get
 export function getNews() {
@@ -25,7 +26,10 @@ export function getNews() {
                     .filter((item) => !Post.hasPostBeenSeen(item))
                     .map((item) => new Post(item, sourcesNames));
 
-                resolve(unseenPosts);
+                resolve({
+                    All: unseenPosts,
+                    ...groupBy(unseenPosts, 'sourceName'),
+                });
             }
         );
     });

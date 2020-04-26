@@ -22,6 +22,6 @@
 <style></style>
 
 <!-- prettier-ignore -->
-{#each posts as post, i}
+{#each posts as post, i (post.uid)}
 <Post {post} observer="{observer}" {showPostSource} />
 {/each}

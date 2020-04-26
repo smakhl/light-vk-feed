@@ -39,7 +39,7 @@
         {/each}
     {/if}
     {#if repost}
-        <div class="post">
+        <div class="post repost">
             <p class="date">{repost.date}</p>
             <h4>{repost.sourceName}</h4>
             {#if repost.text}
@@ -76,5 +76,8 @@
     }
     .seen {
         opacity: 0.5;
+    }
+    .repost {
+        margin-top: 1em;
     }
 </style>

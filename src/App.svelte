@@ -1,19 +1,23 @@
 <script>
     import Feed from './components/Feed.svelte';
     import Credits from './components/Credits.svelte';
+    import Navbar from './components/Navbar.svelte';
+    import Filter from './components/Filter.svelte';
     import { login, logout, getIsLoggedIn } from './vk/auth';
     import { getNews } from './vk/data/news';
+    import { groupBy } from './utils/groupBy';
 
     let error;
     let isLoggedIn;
-    let news;
     let source = 'All';
+    let newsBySource;
+    $: news = newsBySource && newsBySource[source];
 
     (async () => {
         try {
             isLoggedIn = await getIsLoggedIn();
             if (isLoggedIn) {
-                news = await getNews();
+                newsBySource = await getNews();
             }
         } catch (e) {
             error = e;
@@ -35,16 +39,16 @@
         try {
             isLoggedIn = await login();
             if (isLoggedIn) {
-                news = await getNews();
+                newsBySource = await getNews();
             }
         } catch (e) {
             error = e;
         }
     }
 
-    let readNewsCount = 0;
+    $: readNewsCount = news && news.filter((n) => n.seen).length;
     function updateReadCount() {
-        readNewsCount = news.filter((n) => n.seen).length;
+        newsBySource = newsBySource;
     }
 
     async function markAllAsReadAndRefresh() {
@@ -56,27 +60,31 @@
 
     async function refresh() {
         window.scrollTo(0, 0);
-        news = undefined;
-        news = await getNews();
+        newsBySource = await getNews();
+        if (!newsBySource[source]) {
+            source = 'All';
+        }
         updateReadCount();
     }
 
-    const showPostSource = source === 'All';
+    $: showPostSource = source === 'All';
+    $: totalNewsCount = news && news.length;
+
+    function handleSourceChange(newSource) {
+        if (newSource === source) return;
+
+        source = newSource;
+        news = newsBySource[source];
+    }
 </script>
 
-<!-- prettier-ignore -->
-<nav>
-    {#if news}
-        <span class="read-counter">
-            Feed: {source} -- Read: {readNewsCount}/{news.length}
-        </span>
-    {/if}
-    {#if isLoggedIn}
-        <button on:click={handleLogoutClick} id="logout">
-            <img class="exit-icon" src="icons/door.svg" alt="">
-        </button>
-    {/if}
-</nav>
+<Navbar
+    {source}
+    totalCount="{totalNewsCount}"
+    readCount="{readNewsCount}"
+    shouldShowLogoutBtn="{isLoggedIn}"
+    {handleLogoutClick}
+/>
 <!-- prettier-ignore -->
 <main>
     {#if isLoggedIn === false}
@@ -85,7 +93,7 @@
         </p>
     {:else if news}
         {#if news.length > 0}
-            <div class="feed">
+            <div class="top">
                 <Feed posts={news} 
                     onPostRead={updateReadCount} 
                     {showPostSource}
@@ -101,7 +109,7 @@
     {/if}
     
     <div class="bottom">
-        {#if isLoggedIn}
+        {#if isLoggedIn && news}
             <p class="centered">
                 <button on:click={markAllAsReadAndRefresh} class="refresh-button">
                     <img class="refresh-icon" src="icons/refresh.svg" alt="">
@@ -113,41 +121,18 @@
         </p>
     </div>
 
+    {#if newsBySource && newsBySource.All.length}
+        <Filter
+            {newsBySource}
+            current="{source}"
+            onCurrentChanged="{handleSourceChange}"
+        />
+    {/if}
 </main>
-{#if news}
-<button class="filter">
-    <img class="filter-icon" src="icons/filter.svg" alt="" />
-</button>
-{/if}
 
 <style>
     :global(body) {
         padding-top: 42px;
-    }
-    nav {
-        display: flex;
-        flex-direction: row;
-        justify-content: flex-end;
-        align-items: center;
-
-        background-color: #68a5eb;
-        height: 42px;
-
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-
-        z-index: 1;
-    }
-    .read-counter {
-        margin-left: 24px;
-        margin-right: auto;
-
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        color: #fff;
     }
     main {
         padding: 8px;
@@ -162,15 +147,6 @@
     .bottom {
         margin-top: auto;
     }
-    #logout {
-        margin: 0;
-        margin-right: 8px;
-        font-size: 12px;
-        height: 80%;
-    }
-    .exit-icon {
-        height: 100%;
-    }
     .centered {
         text-align: center;
     }
@@ -181,20 +157,6 @@
     }
     .refresh-icon {
         width: 32px;
-    }
-    .filter {
-        position: fixed;
-        bottom: 25px;
-        right: 25px;
-
-        width: 64px;
-        height: 64px;
-        border-radius: 50%;
-        padding: 1em;
-        box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, 0.3);
-    }
-    .filter-icon {
-        width: 100%;
     }
     .credits {
         margin-bottom: 8px;

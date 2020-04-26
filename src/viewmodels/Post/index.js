@@ -31,8 +31,9 @@ export class Post {
     }
 
     markSeen() {
-        markPostSeen(this.uid, this._date);
+        if (this.seen) return;
 
+        markPostSeen(this.uid, this._date);
         this.seen = true;
     }
 }
