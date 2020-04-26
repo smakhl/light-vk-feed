@@ -58,6 +58,7 @@
 <style>
     .post {
         padding: 1em;
+        padding-top: 2em;
         margin-bottom: 0.5em;
         position: relative;
         box-shadow: 0 0 3px rgb(128, 128, 128);
@@ -76,8 +77,5 @@
     }
     .seen {
         opacity: 0.5;
-    }
-    .repost {
-        margin-top: 1em;
     }
 </style>
