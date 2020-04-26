@@ -17,6 +17,7 @@ function createNewsStore() {
         feeds: { All: [] },
         feed: [],
     };
+    const onFeedChangedCallbacks = [];
 
     const { subscribe, set, update } = writable(initialState);
 
@@ -49,13 +50,18 @@ function createNewsStore() {
         },
         setFeed: (newFeedName) => {
             update((s) => {
-                if (s.feedName === newFeedName) return;
                 return {
                     ...s,
                     feedName: newFeedName,
                     feed: s.feeds[newFeedName],
                 };
             });
+            onFeedChangedCallbacks.forEach((cb) => {
+                cb();
+            });
+        },
+        onFeedChanged: (cb) => {
+            onFeedChangedCallbacks.push(cb);
         },
         markSeen: (postUid) => {
             update((s) => {

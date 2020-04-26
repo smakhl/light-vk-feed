@@ -37,10 +37,10 @@
 {:else}
 <div class="paranja" on:click="{toggleShowButton}"></div>
 <div class="popup shadow" transition:fly="{flyProps}">
-    <div class="sources">
+    <div class="feeds">
         {#each Object.keys($news.feeds) as feedName} {#if
         getUnseenCount(feedName) > 0}
-        <label>
+        <label class="feed">
             <input
                 type="radio"
                 bind:group="{selected}"
@@ -85,6 +85,7 @@
         background-color: white;
         width: 400px;
         max-width: 80%;
+        max-height: 60%;
 
         display: flex;
         flex-direction: column;
@@ -96,7 +97,18 @@
     .close {
         margin-top: auto;
     }
-    .sources {
+    .feeds {
         margin-bottom: 1em;
+        overflow: auto;
+    }
+    .feed {
+        text-align: center;
+        padding: 5px;
+        border: 1px solid rgb(128, 128, 128);
+        margin: 5px 0;
+        border-radius: 5px;
+    }
+    .feed:hover {
+        background-color: rgb(240, 240, 240);
     }
 </style>

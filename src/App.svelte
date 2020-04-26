@@ -25,6 +25,10 @@
         news.markFeedSeen();
         news.load();
     }
+
+    news.onFeedChanged(() => {
+        window.scrollTo(0, 0);
+    });
 </script>
 
 <Navbar />
@@ -49,10 +53,9 @@
             <p class="centered">Loading...</p>
         {/if}
     </div>
-
     
     <div class="bottom">
-        {#if $auth === AUTH_STATUS.LOGGED_IN}
+        {#if $auth === AUTH_STATUS.LOGGED_IN && $news.status === NEWS_STATUS.LOADED}
             <p class="centered">
                 <button on:click={markAllAsReadAndRefresh} class="refresh-button">
                     <img class="refresh-icon" src="icons/refresh.svg" alt="">
