@@ -1,9 +1,15 @@
 <script>
+    import { auth, AUTH_STATUS } from '../stores/auth';
+
     export let source;
     export let readCount;
     export let totalCount;
-    export let shouldShowLogoutBtn;
-    export let handleLogoutClick;
+    function handleLogoutClick() {
+        if (!confirm('Are you sure?')) {
+            return;
+        }
+        auth.logout();
+    }
 </script>
 
 <!-- prettier-ignore -->
@@ -13,8 +19,8 @@
             {source} ({readCount}/{totalCount})
         </span>
     {/if}
-    {#if shouldShowLogoutBtn}
-        <button on:click={handleLogoutClick} class="logout">
+    {#if $auth === AUTH_STATUS.LOGGED_IN}
+        <button on:click={handleLogoutClick} class="logout-btn">
             <img class="exit-icon" src="icons/door.svg" alt="">
         </button>
     {/if}
@@ -47,11 +53,12 @@
         text-overflow: ellipsis;
         color: #fff;
     }
-    .logout {
+    .logout-btn {
         margin: 0;
         margin-right: 8px;
         font-size: 12px;
-        height: 80%;
+        height: 34px;
+        width: 34px;
     }
     .exit-icon {
         height: 100%;

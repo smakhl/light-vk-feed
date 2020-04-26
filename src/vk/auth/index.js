@@ -10,8 +10,12 @@ VK.init({
 
 export function login() {
     return new Promise((resolve, reject) => {
-        VK.Auth.login(({ session }) => {
-            resolve(Boolean(session));
+        VK.Auth.login((result) => {
+            if (result.status === 'connected') {
+                resolve(result);
+            } else {
+                reject(result);
+            }
         }, ACCESS_LEVEL);
     });
 }

@@ -3,55 +3,37 @@
     import Credits from './components/Credits.svelte';
     import Navbar from './components/Navbar.svelte';
     import Filter from './components/Filter.svelte';
-    import { login, logout, getIsLoggedIn } from './vk/auth';
     import { getNews } from './vk/data/news';
     import { groupBy } from './utils/groupBy';
+    import { auth, AUTH_STATUS } from './stores/auth';
 
-    let error;
-    let isLoggedIn;
     let source = 'All';
     let newsBySource;
     $: news = newsBySource && newsBySource[source];
-
-    (async () => {
-        try {
-            isLoggedIn = await getIsLoggedIn();
-            if (isLoggedIn) {
-                newsBySource = await getNews();
-            }
-        } catch (e) {
-            error = e;
-        }
-    })();
-
-    async function handleLogoutClick() {
-        if (!confirm('Are you sure?')) {
-            return;
-        }
-
-        await logout();
-        isLoggedIn = false;
-        news = undefined;
-        localStorage.clear();
-    }
-
-    async function handleLoginClick() {
-        try {
-            isLoggedIn = await login();
-            if (isLoggedIn) {
-                newsBySource = await getNews();
-            }
-        } catch (e) {
-            error = e;
-        }
-    }
-
     $: readNewsCount = news && news.filter((n) => n.seen).length;
+    $: showPostSource = source === 'All';
+    $: totalNewsCount = news && news.length;
+
+    auth.subscribe((status) => {
+        if (status === AUTH_STATUS.LOGGED_IN) {
+            getNews().then((n) => {
+                newsBySource = n;
+            });
+        }
+        if (status === AUTH_STATUS.LOGGED_OUT) {
+            newsBySource = undefined;
+        }
+    });
+
+    function handleLoginClick() {
+        auth.login();
+    }
+
     function updateReadCount() {
         newsBySource = newsBySource;
     }
 
-    async function markAllAsReadAndRefresh() {
+    function markAllAsReadAndRefresh() {
         news.forEach((n) => {
             n.markSeen();
         });
@@ -67,49 +49,41 @@
         updateReadCount();
     }
 
-    $: showPostSource = source === 'All';
-    $: totalNewsCount = news && news.length;
-
     function handleSourceChange(newSource) {
         if (newSource === source) return;
-
         source = newSource;
-        news = newsBySource[source];
     }
 </script>
 
-<Navbar
-    {source}
-    totalCount="{totalNewsCount}"
-    readCount="{readNewsCount}"
-    shouldShowLogoutBtn="{isLoggedIn}"
-    {handleLogoutClick}
-/>
+<Navbar {source} totalCount="{totalNewsCount}" readCount="{readNewsCount}" />
 <!-- prettier-ignore -->
 <main>
-    {#if isLoggedIn === false}
-        <p class="centered">
-            <button on:click={handleLoginClick}>Log in with VK</button>
-        </p>
-    {:else if news}
-        {#if news.length > 0}
-            <div class="top">
-                <Feed posts={news} 
-                    onPostRead={updateReadCount} 
-                    {showPostSource}
-                ></Feed>
-            </div>
+    <div class="top">
+        {#if $auth === AUTH_STATUS.LOGGED_OUT}
+            <p class="centered">
+                <button on:click={handleLoginClick}>Log in with VK</button>
+            </p>
+        {:else if $auth === AUTH_STATUS.LOGGED_IN}
+            {#if news}
+                {#if news.length > 0}
+                    <Feed posts={news} 
+                        onPostRead={updateReadCount} 
+                        {showPostSource}
+                    ></Feed>
+                {:else}
+                    <p class="centered">There's nothing new in your feed! Well done!</p>
+                {/if}
+            {:else}
+                <p class="centered">Loading posts...</p>
+            {/if}
         {:else}
-            <p class="centered">There's nothing new in your feed! Well done!</p>
+            <p class="centered">Loading...</p>
         {/if}
-    {:else if error}
-        <p class="centered" style="color: red;">{error.message}</p>
-    {:else}
-        <p class="centered">Loading...</p>
-    {/if}
+    </div>
+
     
     <div class="bottom">
-        {#if isLoggedIn && news}
+        {#if $auth === AUTH_STATUS.LOGGED_IN && news}
             <p class="centered">
                 <button on:click={markAllAsReadAndRefresh} class="refresh-button">
                     <img class="refresh-icon" src="icons/refresh.svg" alt="">
