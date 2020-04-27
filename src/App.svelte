@@ -21,9 +21,8 @@
         auth.login();
     }
 
-    function markAllAsReadAndRefresh() {
+    function markAllAsRead() {
         news.markFeedSeen();
-        news.load();
     }
 
     news.onFeedChanged(() => {
@@ -57,8 +56,8 @@
     <div class="bottom">
         {#if $auth === AUTH_STATUS.LOGGED_IN && $news.status === NEWS_STATUS.LOADED}
             <p class="centered">
-                <button on:click={markAllAsReadAndRefresh} class="refresh-button">
-                    <img class="refresh-icon" src="icons/refresh.svg" alt="">
+                <button on:click={markAllAsRead} class="refresh-button">
+                    Mark all as read
                 </button>
             </p>
         {/if}
