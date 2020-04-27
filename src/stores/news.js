@@ -53,7 +53,7 @@ function createNewsStore() {
                 return {
                     ...s,
                     feedName: newFeedName,
-                    feed: s.feeds[newFeedName],
+                    feed: s.feeds[newFeedName].filter((p) => !p.seen),
                 };
             });
             onFeedChangedCallbacks.forEach((cb) => {
