@@ -17,6 +17,11 @@
         }
     });
 
+    news.subscribe((n) => {
+        // console.log('n', n);
+        window.n = n;
+    });
+
     function handleLoginClick() {
         auth.login();
     }
@@ -25,9 +30,11 @@
         news.markFeedSeen();
     }
 
-    news.onFeedChanged(() => {
+    news.onFeedChanged(backToTop);
+
+    function backToTop() {
         window.scrollTo(0, 0);
-    });
+    }
 </script>
 
 <Navbar />
@@ -54,7 +61,10 @@
     </div>
     
     <div class="bottom">
-        {#if $auth === AUTH_STATUS.LOGGED_IN && $news.status === NEWS_STATUS.LOADED}
+        {#if $auth === AUTH_STATUS.LOGGED_IN && 
+            $news.status === NEWS_STATUS.LOADED && 
+            $news.feed.length
+        }
             <p class="centered">
                 <button on:click={markAllAsRead} class="refresh-button">
                     Mark all as read
@@ -66,7 +76,7 @@
         </p>
     </div>
 
-    {#if Object.keys($news.feeds).length > 2 }
+    {#if $news.status === NEWS_STATUS.LOADED}
         <Filter />
     {/if}
 </main>
