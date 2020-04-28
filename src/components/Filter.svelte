@@ -21,8 +21,15 @@
     }
 
     function getUnseenCount(source) {
-        if (!$news.feeds[source]) return undefined;
         return $news.feeds[source].filter((post) => !post.seen).length;
+    }
+    function getUnseen(newsSource) {
+        const feeds = Object.keys(newsSource.feeds);
+        return feeds
+            .map((name) => {
+                return { name, unseen: getUnseenCount(name) };
+            })
+            .filter((f) => f.unseen > 0);
     }
 </script>
 
@@ -38,18 +45,17 @@
 <div class="paranja" on:click="{toggleShowButton}"></div>
 <div class="popup shadow" transition:fly="{flyProps}">
     <div class="feeds">
-        {#each Object.keys($news.feeds) as feedName} {#if
-        getUnseenCount(feedName) > 0}
+        {#each getUnseen($news) as feed}
         <label class="feed">
             <input
                 type="radio"
                 bind:group="{selected}"
-                value="{feedName}"
+                value="{feed.name}"
                 on:change="{handleFeedChange}"
             />
-            {feedName} ({getUnseenCount(feedName)})
+            {feed.name} ({feed.unseen})
         </label>
-        {/if} {/each}
+        {:else} There's no unseen posts! {/each}
     </div>
     <button on:click="{toggleShowButton}" class="close">Close</button>
 </div>
