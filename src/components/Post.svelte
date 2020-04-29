@@ -6,7 +6,16 @@
     export let observer;
     export let showPostSource;
 
-    const { postUrl, date, repost, sourceName, text, attachments, uid } = post;
+    const {
+        postUrl,
+        date,
+        repost,
+        sourceName,
+        text,
+        attachments,
+        uid,
+        seen,
+    } = post;
 
     let container;
     onMount(() => {
@@ -26,7 +35,12 @@
     class:seen={post.seen} 
     data-post-uid={uid}
 >
-    <p class="date">{date}</p>
+    <div class="corner">
+        {#if post.seen}
+            <img class="seen-icon" src="./icons/eye.svg" alt="">
+        {/if}
+        <span class="date">{date}</span>
+    </div>
     {#if showPostSource}
         <h4>{sourceName}</h4>
     {/if}
@@ -67,15 +81,22 @@
         white-space: pre-wrap;
         word-break: break-word;
     }
-    .date {
-        color: #505050;
+    .corner {
         position: absolute;
         top: 0.5em;
         right: 0.5em;
+    }
+    .date {
+        color: #505050;
         font-size: 0.75em;
-        margin: 0;
     }
     .seen {
-        opacity: 0.5;
+        opacity: 0.8;
+    }
+    .seen-icon {
+        height: 0.75em;
+        width: 0.75em;
+        vertical-align: middle;
+        display: inline-block;
     }
 </style>
