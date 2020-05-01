@@ -42,7 +42,7 @@
 <main>
     <div class="top">
         {#if $auth === AUTH_STATUS.LOGGED_OUT}
-            <button on:click={handleLoginClick}>Log in with VK</button>
+            <p><button on:click={handleLoginClick}>Log in with VK</button></p>
         {:else if $auth === AUTH_STATUS.LOGGED_IN}
             <Feed />
         {:else}
@@ -73,6 +73,7 @@
     main {
         padding: 8px;
         margin: auto;
+        width: 100%;
         max-width: 500px;
         min-width: 300px;
         height: 100%;
@@ -83,6 +84,7 @@
     }
     .top {
         margin-bottom: auto;
+        width: 100%;
     }
     .refresh-button {
         width: 70%;
@@ -91,5 +93,8 @@
     }
     .refresh-icon {
         width: 32px;
+    }
+    p {
+        text-align: center;
     }
 </style>

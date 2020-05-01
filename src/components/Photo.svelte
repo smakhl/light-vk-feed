@@ -2,15 +2,12 @@
     import { selectPhoto } from '../utils/selectPhoto';
 
     export let photo;
+    export let width;
 
-    const photoSrc = selectPhoto(photo, 600);
+    const imgProps = selectPhoto(photo, width);
 </script>
 
-<style>
-    img {
-        width: 100%;
-    }
-</style>
+<style></style>
 
 <!-- prettier-ignore -->
-<img loading="lazy" src={photoSrc} alt="" srcset="" />
+<img loading="lazy" alt="" {...imgProps} />

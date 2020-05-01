@@ -5,6 +5,7 @@
     export let post;
     export let observer;
     export let showPostSource;
+    export let width;
 
     const {
         postUrl,
@@ -49,7 +50,7 @@
     {/if}
     {#if attachments}
         {#each attachments as att, i}
-           <Attachment {att}></Attachment>
+           <Attachment {att} width="{width - 16*2}"></Attachment>
         {/each}
     {/if}
     {#if repost}
@@ -61,7 +62,7 @@
             {/if}
             {#if repost.attachments}
                 {#each repost.attachments as att, i}
-                    <Attachment {att}></Attachment>
+                    <Attachment {att} width="{width - 16*4}"></Attachment>
                 {/each}
             {/if}
         </div>
@@ -71,7 +72,7 @@
 
 <style>
     .post {
-        padding: 1em;
+        padding: 16px;
         padding-top: 2em;
         margin-bottom: 0.5em;
         position: relative;

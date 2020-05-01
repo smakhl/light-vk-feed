@@ -17,7 +17,7 @@
 <a href="{att.link.url}" target="_blank">
     <div class="link">
         {#if photoSrc}
-            <img loading="lazy" src="{photoSrc}" alt="" />
+            <img src="{photoSrc}" alt="" />
         {/if}
         <p>{att.link.title}</p>
     </div>

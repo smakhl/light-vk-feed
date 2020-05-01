@@ -3,15 +3,16 @@
     import Photo from './Photo.svelte';
     import Video from './Video.svelte';
     export let att;
+    export let width;
 </script>
 
 <!-- prettier-ignore -->
 <div>
     {#if att.type === 'photo'}
-        <Photo photo={att.photo}></Photo>
+        <Photo {width} photo={att.photo}></Photo>
     {:else if att.type === 'video'}
         <span>Video frame:</span>
-        <Photo photo={att.video}></Photo>
+        <Photo {width} photo={att.video}></Photo>
     {:else if att.type === 'doc' && att.doc.ext === 'gif'}
         <Video {att}></Video>
     {:else if att.type === 'doc' && att.doc.ext === 'pdf'}
