@@ -20,6 +20,14 @@
 <style></style>
 
 <!-- prettier-ignore -->
-{#each $news.feed as post, i (post.uid)}
-<Post {post} observer="{observer}" {showPostSource} />
-{/each}
+<div class="feed">
+    {#if $news.status === NEWS_STATUS.LOADED}
+        {#each $news.feed as post, i (post.uid)}
+            <Post {post} observer="{observer}" {showPostSource} />
+        {:else}
+            <p>There's nothing new in your feed! Well done!</p>
+        {/each}
+    {:else}
+        <p>Loading posts...</p>
+    {/if}
+</div>

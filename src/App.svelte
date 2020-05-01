@@ -42,39 +42,24 @@
 <main>
     <div class="top">
         {#if $auth === AUTH_STATUS.LOGGED_OUT}
-            <p class="centered">
-                <button on:click={handleLoginClick}>Log in with VK</button>
-            </p>
+            <button on:click={handleLoginClick}>Log in with VK</button>
         {:else if $auth === AUTH_STATUS.LOGGED_IN}
-            {#if $news.status === NEWS_STATUS.LOADED}
-                {#if $news.feed.length > 0}
-                    <Feed />
-                {:else}
-                    <p class="centered">There's nothing new in your feed! Well done!</p>
-                {/if}
-            {:else}
-                <p class="centered">Loading posts...</p>
-            {/if}
+            <Feed />
         {:else}
-            <p class="centered">Loading...</p>
+            <p>Loading...</p>
         {/if}
     </div>
     
-    <div class="bottom">
-        {#if $auth === AUTH_STATUS.LOGGED_IN && 
-            $news.status === NEWS_STATUS.LOADED && 
-            $news.feed.length
-        }
-            <p class="centered">
-                <button on:click={markAllAsRead} class="refresh-button">
-                    Mark all as read
-                </button>
-            </p>
-        {/if}
-        <p class="credits centered">
-            <Credits />
-        </p>
-    </div>
+    {#if $auth === AUTH_STATUS.LOGGED_IN && 
+        $news.status === NEWS_STATUS.LOADED && 
+        $news.feed.length
+    }
+    <button on:click={markAllAsRead} class="refresh-button">
+        Mark all as read
+    </button>
+    {/if}
+    
+    <Credits />
 
     {#if $news.status === NEWS_STATUS.LOADED}
         <Filter />
@@ -94,12 +79,10 @@
         box-sizing: border-box;
         display: flex;
         flex-direction: column;
+        align-items: center;
     }
-    .bottom {
-        margin-top: auto;
-    }
-    .centered {
-        text-align: center;
+    .top {
+        margin-bottom: auto;
     }
     .refresh-button {
         width: 70%;
@@ -108,9 +91,5 @@
     }
     .refresh-icon {
         width: 32px;
-    }
-    .credits {
-        margin-bottom: 8px;
-        font-size: 0.8em;
     }
 </style>
