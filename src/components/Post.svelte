@@ -55,7 +55,9 @@
     {/if}
     {#if repost}
         <div class="post repost">
-            <p class="date">{repost.date}</p>
+            <div class="corner">
+                <span class="date">{repost.date}</span>
+            </div>
             <h4>{repost.sourceName}</h4>
             {#if repost.text}
                 <p class="text">{repost.text}</p>
