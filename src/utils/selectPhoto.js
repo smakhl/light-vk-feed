@@ -11,9 +11,18 @@ export function selectPhoto(obj, containerWidth) {
         }
     }
 
+    let size;
+    if (obj.height) {
+        size = getPhotoSize(obj, containerWidth);
+    } else {
+        size = {
+            width: containerWidth,
+        };
+    }
+
     return {
         src: photoSrc,
-        ...getPhotoSize(obj, containerWidth),
+        ...size,
     };
 }
 
