@@ -1,6 +1,13 @@
 <script>
+    import { fly } from 'svelte/transition';
+    import { quintOut } from 'svelte/easing';
     import { auth, AUTH_STATUS } from '../stores/auth';
     import { news, NEWS_STATUS } from '../stores/news';
+
+    const flyProps = {
+        y: -100,
+        opacity: 0.5,
+    };
 
     $: source = $news.feedName;
     $: readCount = $news.feed.filter((n) => n.seen).length;
@@ -15,7 +22,7 @@
 </script>
 
 <!-- prettier-ignore -->
-<nav>
+<nav transition:fly="{flyProps}">
     {#if totalCount}
         <span class="title">
             {source} ({readCount}/{totalCount})

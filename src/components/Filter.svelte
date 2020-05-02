@@ -1,5 +1,5 @@
 <script>
-    import { fade, fly } from 'svelte/transition';
+    import { fly } from 'svelte/transition';
     import { quintOut } from 'svelte/easing';
     import { news, NEWS_STATUS } from '../stores/news';
 
