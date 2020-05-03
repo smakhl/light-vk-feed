@@ -12,6 +12,13 @@
     let showButton = true;
     function toggleShowButton() {
         showButton = !showButton;
+
+        if (!showButton) {
+            // prevents scroll
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'auto';
+        }
     }
 
     let selected = $news.feedName;
