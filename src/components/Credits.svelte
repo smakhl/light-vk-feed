@@ -16,5 +16,6 @@
 <style>
     .credits {
         font-size: 0.8em;
+        margin-bottom: 1em;
     }
 </style>
