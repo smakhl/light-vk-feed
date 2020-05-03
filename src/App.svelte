@@ -7,7 +7,7 @@
     import { groupBy } from './utils/groupBy';
     import { auth, AUTH_STATUS } from './stores/auth';
     import { news, NEWS_STATUS } from './stores/news';
-    import { isScrolledDown } from './stores/isScrolledDown';
+    import { shouldShowControls } from './stores/shouldShowControls';
 
     auth.subscribe((status) => {
         if (status === AUTH_STATUS.LOGGED_IN) {
@@ -38,7 +38,7 @@
     }
 </script>
 
-{#if !$isScrolledDown}
+{#if $shouldShowControls}
 <Navbar />
 {/if}
 <!-- prettier-ignore -->
@@ -64,7 +64,7 @@
     
     <Credits />
 
-    {#if $news.status === NEWS_STATUS.LOADED && !$isScrolledDown}
+    {#if $news.status === NEWS_STATUS.LOADED && $shouldShowControls}
         <Filter />
     {/if}
 </main>
