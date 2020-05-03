@@ -6,12 +6,12 @@ export const shouldShowControls = readable(true, (set) => {
     let prevScrollPos = window.pageYOffset;
     window.onscroll = function () {
         const currentScrollPos = window.pageYOffset;
-        const scrolledDown =
+        const scrollingDown =
             currentScrollPos > prevScrollPos && currentScrollPos > NAV_HEIGHT;
         const reachedBottom =
             window.innerHeight + window.scrollY >= document.body.scrollHeight;
 
-        if (scrolledDown && !reachedBottom) {
+        if (scrollingDown && !reachedBottom) {
             set(false);
         } else {
             set(true);
