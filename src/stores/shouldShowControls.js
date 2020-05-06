@@ -9,7 +9,8 @@ export const shouldShowControls = readable(true, (set) => {
         const scrollingDown =
             currentScrollPos > prevScrollPos && currentScrollPos > NAV_HEIGHT;
         const reachedBottom =
-            window.innerHeight + window.scrollY >= document.body.scrollHeight;
+            window.innerHeight + window.scrollY >=
+            document.body.scrollHeight - window.innerHeight * 0.2;
 
         if (scrollingDown && !reachedBottom) {
             set(false);
