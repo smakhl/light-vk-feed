@@ -24,14 +24,19 @@ function createNewsStore() {
     return {
         subscribe,
         load: async () => {
-            let lastFeedName;
             update((s) => {
-                lastFeedName = s.feedName;
                 return { ...s, status: NEWS_STATUS.LOADING };
             });
             try {
                 const feeds = await getNews();
-                const feedName = feeds[lastFeedName] ? lastFeedName : 'All';
+                const lastFeedName = getLastFeed();
+                let feedName;
+                if (feeds[lastFeedName]) {
+                    feedName = lastFeedName;
+                } else {
+                    feedName = 'All';
+                    setLastFeed('All');
+                }
                 const feed = feeds[feedName];
 
                 set({
@@ -59,6 +64,7 @@ function createNewsStore() {
             onFeedChangedCallbacks.forEach((cb) => {
                 cb();
             });
+            setLastFeed(newFeedName);
         },
         onFeedChanged: (cb) => {
             onFeedChangedCallbacks.push(cb);
@@ -76,4 +82,12 @@ function createNewsStore() {
             });
         },
     };
+}
+
+function setLastFeed(feed) {
+    localStorage.setItem('lastFeed', feed);
+}
+
+function getLastFeed() {
+    return localStorage.getItem('lastFeed');
 }
