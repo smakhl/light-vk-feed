@@ -38,9 +38,6 @@
             })
             .filter((f) => f.unseen > 0);
     }
-    function refresh() {
-        news.load();
-    }
 </script>
 
 {#if showButton}
@@ -67,11 +64,7 @@
         </label>
         {:else} There's no unseen posts! {/each}
     </div>
-    {#if !getUnseen($news).length}
-    <button on:click="{refresh}" class="refresh">Refresh</button>
-    {:else}
     <button on:click="{toggleShowButton}" class="close">Close</button>
-    {/if}
 </div>
 {/if}
 <style>

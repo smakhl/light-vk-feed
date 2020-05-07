@@ -36,6 +36,9 @@
     function backToTop() {
         window.scrollTo(0, 0);
     }
+    function refresh() {
+        news.load();
+    }
 </script>
 
 {#if $shouldShowControls}
@@ -53,13 +56,16 @@
         {/if}
     </div>
     
-    {#if $auth === AUTH_STATUS.LOGGED_IN && 
-        $news.status === NEWS_STATUS.LOADED && 
-        $news.feed.length
-    }
-    <button on:click={markAllAsRead} class="refresh-button">
-        Mark all as read
-    </button>
+    {#if $auth === AUTH_STATUS.LOGGED_IN && $news.status === NEWS_STATUS.LOADED }
+        {#if $news.feed.filter((n) => n.seen).length === $news.feed.length}
+            <button on:click={refresh} class="refresh-button">
+                Refresh
+            </button>
+        {:else}
+            <button on:click={markAllAsRead} class="refresh-button">
+                Mark all as read
+            </button>
+        {/if}
     {/if}
     
     <Credits />
