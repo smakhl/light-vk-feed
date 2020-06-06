@@ -1,5 +1,6 @@
 <script>
     import { onMount, onDestroy } from 'svelte';
+    import { wrapUrls } from '../utils/wrapUrls';
     import Attachment from './Attachment.svelte';
 
     export let post;
@@ -46,7 +47,7 @@
         <h4>{sourceName}</h4>
     {/if}
     {#if text}
-        <p class="text">{text}</p>
+        <p class="text">{@html wrapUrls(text)}</p>
     {/if}
     {#if attachments}
         {#each attachments as att, i}
