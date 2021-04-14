@@ -30,6 +30,9 @@ export function logout() {
 
 export function getIsLoggedIn() {
     return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            resolve(false);
+        }, 3000);
         VK.Auth.getLoginStatus(({ status }) => {
             resolve(status === 'connected');
         });
